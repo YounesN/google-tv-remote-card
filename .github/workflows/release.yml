@@ -21,4 +21,4 @@ jobs:
       - name: Attach card to release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/tcl-remote-card.js --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/google-tv-remote-card.js --clobber

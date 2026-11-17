@@ -49,11 +49,22 @@ export type RowConfig =
   | { apps: AppRef[] }
   | { dpad: true | null };
 
-export interface TclRemoteCardConfig {
-  type: string;
+/** One TV or streaming box the card can control. */
+export interface DeviceConfig {
   entity: string;
   remote_entity?: string;
   name?: string;
+  icon?: string;
+}
+
+export interface GoogleTvRemoteCardConfig {
+  type: string;
+  /** A single device. Use `entities` for several. */
+  entity?: string;
+  remote_entity?: string;
+  name?: string;
+  /** Several devices, shown as tabs to switch between. */
+  entities?: Array<string | DeviceConfig>;
   /** Hide the header with the TV name and state. */
   show_header?: boolean;
   rows?: RowConfig[];

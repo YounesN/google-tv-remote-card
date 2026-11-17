@@ -1,15 +1,15 @@
 {
-  "name": "tcl-remote-card",
-  "version": "0.1.0",
-  "description": "Home Assistant dashboard card that turns a TCL Google TV / Android TV into a configurable remote",
+  "name": "google-tv-remote-card",
+  "version": "0.2.0",
+  "description": "Home Assistant dashboard card: an iOS-style, configurable remote for Google TV and Android TV devices",
   "type": "module",
-  "main": "dist/tcl-remote-card.js",
+  "main": "dist/google-tv-remote-card.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YounesN/tcl-remote-card.git"
+    "url": "https://github.com/YounesN/google-tv-remote-card.git"
   },
-  "keywords": ["home-assistant", "hacs", "lovelace", "custom-card", "android-tv", "google-tv", "tcl", "remote"],
+  "keywords": ["home-assistant", "hacs", "lovelace", "custom-card", "android-tv", "google-tv", "tcl", "nvidia-shield", "remote"],
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c --watch",
