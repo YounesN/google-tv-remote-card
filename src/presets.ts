@@ -22,6 +22,8 @@ export interface AppDef {
   /** Label color, for brands with a light background. Defaults to white. */
   text_color?: string;
   icon?: string;
+  /** Short text shown in the tile when there's no logo. */
+  badge?: string;
 }
 
 /**
@@ -76,13 +78,13 @@ export const APPS: Record<string, AppDef> = {
   netflix: { name: "Netflix", activity: "https://www.netflix.com/title", color: "#e50914" },
   youtube: { name: "YouTube", activity: "https://www.youtube.com", color: "#ff0000" },
   youtube_music: { name: "YT Music", activity: "com.google.android.youtube.tvmusic", color: "#ff0000" },
-  prime_video: { name: "Prime Video", activity: "https://app.primevideo.com", color: "#00a8e1" },
-  disney_plus: { name: "Disney+", activity: "https://www.disneyplus.com", color: "#113ccf" },
-  hulu: { name: "Hulu", activity: "com.hulu.livingroomplus", color: "#1ce783", text_color: "#0b0c0f" },
-  max: { name: "Max", activity: "com.wbd.stream", color: "#002be7" },
+  prime_video: { name: "Prime Video", activity: "https://app.primevideo.com", color: "#00a8e1", badge: "prime" },
+  disney_plus: { name: "Disney+", activity: "https://www.disneyplus.com", color: "#113ccf", badge: "D+" },
+  hulu: { name: "Hulu", activity: "com.hulu.livingroomplus", color: "#1ce783", text_color: "#0b0c0f", badge: "hulu" },
+  max: { name: "HBO Max", activity: "com.wbd.stream", color: "#000000" },
   apple_tv: { name: "Apple TV", activity: "com.apple.atve.androidtv.appletv", color: "#000000" },
   paramount_plus: { name: "Paramount+", activity: "com.cbs.ott", color: "#0064ff" },
-  peacock: { name: "Peacock", activity: "com.peacocktv.peacockandroid", color: "#000000" },
+  peacock: { name: "Peacock", activity: "com.peacocktv.peacockandroid", color: "#000000", badge: "P" },
   plex: { name: "Plex", activity: "com.plexapp.android", color: "#e5a00d" },
   spotify: { name: "Spotify", activity: "com.spotify.tv.android", color: "#1db954" },
   twitch: { name: "Twitch", activity: "tv.twitch.android.app", color: "#9146ff" },

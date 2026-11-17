@@ -5,7 +5,7 @@ import { BUTTONS } from "./presets";
 import "./editor";
 import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.3.0";
+export const CARD_VERSION = "0.4.0";
 
 console.info(
   `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
@@ -222,11 +222,18 @@ export class GoogleTvRemoteCard extends LitElement {
               class="app"
               style="--app-color: ${app.color}; --app-text-color: ${app.text_color ?? "#fff"}"
               title=${app.name}
+              aria-label=${app.name}
               ?disabled=${disabled}
               @click=${() => this._launch(app)}
             >
-              ${app.icon ? html`<ha-icon .icon=${app.icon}></ha-icon>` : nothing}
-              <span>${app.name}</span>
+              <span class="app-icon">
+                ${app.logo
+                  ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d=${app.logo}></path></svg>`
+                  : app.icon
+                    ? html`<ha-icon .icon=${app.icon}></ha-icon>`
+                    : html`<span class="badge ${(app.badge ?? "").length > 2 ? "wide" : ""}">${app.badge}</span>`}
+              </span>
+              <span class="app-name">${app.name}</span>
             </button>
           `,
         )}
@@ -639,42 +646,73 @@ export class GoogleTvRemoteCard extends LitElement {
       font-variant-numeric: tabular-nums;
     }
 
-    /* App tiles: rounded squares with a soft highlight. */
+    /* App tiles: iOS-style app icons with the name underneath. */
     .apps {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 14px 4px;
+      justify-items: center;
     }
     .app {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+      color: var(--gtv-ink);
+      font: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .app-icon {
+      width: var(--gtv-app-size, 56px);
+      height: var(--gtv-app-size, 56px);
+      border-radius: 22.5%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      min-height: 52px;
-      padding: 6px 8px;
-      border: none;
-      border-radius: 16px;
       background:
         linear-gradient(180deg, color-mix(in srgb, #fff 22%, transparent), transparent 60%),
         var(--app-color);
       color: var(--app-text-color, #fff);
-      font: inherit;
-      font-weight: 650;
-      font-size: 0.85em;
-      letter-spacing: -0.01em;
-      line-height: 1.15;
-      cursor: pointer;
       box-shadow:
         0 1px 2px color-mix(in srgb, #000 18%, transparent),
         0 4px 12px -4px color-mix(in srgb, var(--app-color) 60%, transparent);
-      -webkit-tap-highlight-color: transparent;
       transition: transform 0.25s var(--gtv-ease), filter 0.2s ease;
     }
-    .app:hover:not([disabled]) {
+    .app-icon svg {
+      width: 52%;
+      height: 52%;
+    }
+    .app-icon ha-icon {
+      --mdc-icon-size: 28px;
+    }
+    .badge {
+      font-weight: 800;
+      font-size: 1.35em;
+      letter-spacing: -0.03em;
+    }
+    .badge.wide {
+      font-size: 0.95em;
+      letter-spacing: -0.01em;
+    }
+    .app-name {
+      max-width: 100%;
+      font-size: 0.75em;
+      font-weight: 500;
+      color: var(--secondary-text-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .app:hover:not([disabled]) .app-icon {
       filter: brightness(1.08);
     }
-    .app:active:not([disabled]) {
-      transform: scale(0.94);
+    .app:active:not([disabled]) .app-icon {
+      transform: scale(0.92);
       transition-duration: 0.08s;
     }
     .warning {
