@@ -2,27 +2,27 @@ import { LitElement, css, html, nothing, type PropertyValues, type TemplateResul
 import { customElement, property, state } from "lit/decorators.js";
 import { resolveDevices, resolveRows, type ResolvedApp, type ResolvedButton, type ResolvedRow } from "./config";
 import { BUTTONS } from "./presets";
-import type { DeviceConfig, HomeAssistant, TclRemoteCardConfig } from "./types";
+import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.1.0";
+export const CARD_VERSION = "0.2.0";
 
 console.info(
-  `%c TCL-REMOTE-CARD %c v${CARD_VERSION} `,
-  "color: white; background: #e4002b; font-weight: 700;",
-  "color: #e4002b; background: white; font-weight: 700;",
+  `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
+  "color: white; background: #4285f4; font-weight: 700;",
+  "color: #4285f4; background: white; font-weight: 700;",
 );
 
-@customElement("tcl-remote-card")
-export class TclRemoteCard extends LitElement {
+@customElement("google-tv-remote-card")
+export class GoogleTvRemoteCard extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @state() private _config?: TclRemoteCardConfig;
+  @state() private _config?: GoogleTvRemoteCardConfig;
   @state() private _rows: ResolvedRow[] = [];
   @state() private _devices: DeviceConfig[] = [];
   @state() private _selected = 0;
   /** Volume the user is dragging to, shown until the TV reports back. */
   @state() private _pendingVolume?: number;
 
-  public setConfig(config: TclRemoteCardConfig): void {
+  public setConfig(config: GoogleTvRemoteCardConfig): void {
     if (!config) throw new Error("Invalid configuration");
     // Both throw a readable error for invalid config, which HA shows in the card.
     this._devices = resolveDevices(config);
@@ -39,7 +39,7 @@ export class TclRemoteCard extends LitElement {
   }
 
   private get _storageKey(): string {
-    return `tcl-remote-card:${this._devices.map((d) => d.entity).join(",")}`;
+    return `google-tv-remote-card:${this._devices.map((d) => d.entity).join(",")}`;
   }
 
   private _loadSelection(): number | undefined {
@@ -69,7 +69,7 @@ export class TclRemoteCard extends LitElement {
     return this._rows.reduce((size, row) => size + (row.type === "dpad" ? 3 : 1), top);
   }
 
-  public static getStubConfig(hass: HomeAssistant): Partial<TclRemoteCardConfig> {
+  public static getStubConfig(hass: HomeAssistant): Partial<GoogleTvRemoteCardConfig> {
     const entity = Object.keys(hass.states).find((id) => id.startsWith("media_player.")) ?? "";
     return { entity };
   }
@@ -310,14 +310,14 @@ export class TclRemoteCard extends LitElement {
 
   static styles = css`
     :host {
-      --tcl-btn-size: 56px;
-      --tcl-ink: var(--primary-text-color, #1c1c1e);
-      --tcl-surface: color-mix(in srgb, var(--tcl-ink) 8%, transparent);
-      --tcl-surface-raised: color-mix(in srgb, var(--tcl-ink) 12%, transparent);
-      --tcl-surface-pressed: color-mix(in srgb, var(--tcl-ink) 22%, transparent);
-      --tcl-accent: var(--primary-color, #0a84ff);
-      --tcl-red: #ff3b30;
-      --tcl-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --gtv-btn-size: 56px;
+      --gtv-ink: var(--primary-text-color, #1c1c1e);
+      --gtv-surface: color-mix(in srgb, var(--gtv-ink) 8%, transparent);
+      --gtv-surface-raised: color-mix(in srgb, var(--gtv-ink) 12%, transparent);
+      --gtv-surface-pressed: color-mix(in srgb, var(--gtv-ink) 22%, transparent);
+      --gtv-accent: var(--primary-color, #0a84ff);
+      --gtv-red: #ff3b30;
+      --gtv-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", var(--paper-font-body1_-_font-family, Roboto), sans-serif;
       -webkit-font-smoothing: antialiased;
     }
@@ -337,7 +337,7 @@ export class TclRemoteCard extends LitElement {
       padding: 4px;
       margin-bottom: 16px;
       border-radius: 999px;
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -380,11 +380,11 @@ export class TclRemoteCard extends LitElement {
     }
     .tab.selected {
       background: var(--card-background-color, #fff);
-      color: var(--tcl-ink);
+      color: var(--gtv-ink);
       box-shadow: 0 1px 4px color-mix(in srgb, #000 18%, transparent);
     }
     .tab:focus-visible {
-      outline: 2px solid var(--tcl-accent);
+      outline: 2px solid var(--gtv-accent);
       outline-offset: 1px;
     }
     .dot {
@@ -392,7 +392,7 @@ export class TclRemoteCard extends LitElement {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: color-mix(in srgb, var(--tcl-ink) 25%, transparent);
+      background: color-mix(in srgb, var(--gtv-ink) 25%, transparent);
     }
     .dot.on {
       background: #34c759;
@@ -414,7 +414,7 @@ export class TclRemoteCard extends LitElement {
       font-weight: 500;
       padding: 4px 10px;
       border-radius: 999px;
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
       color: var(--secondary-text-color);
       text-transform: capitalize;
       overflow: hidden;
@@ -436,14 +436,14 @@ export class TclRemoteCard extends LitElement {
 
     /* Round, translucent buttons with a soft press animation. */
     .btn {
-      width: var(--tcl-btn-size);
-      height: var(--tcl-btn-size);
+      width: var(--gtv-btn-size);
+      height: var(--gtv-btn-size);
       flex: 0 0 auto;
       border-radius: 50%;
       border: none;
       padding: 0;
-      background: var(--tcl-surface);
-      color: var(--tcl-ink);
+      background: var(--gtv-surface);
+      color: var(--gtv-ink);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -451,19 +451,19 @@ export class TclRemoteCard extends LitElement {
       -webkit-tap-highlight-color: transparent;
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
-      transition: transform 0.25s var(--tcl-ease), background-color 0.2s ease, filter 0.2s ease;
+      transition: transform 0.25s var(--gtv-ease), background-color 0.2s ease, filter 0.2s ease;
     }
     .btn:hover:not([disabled]) {
-      background: var(--tcl-surface-raised);
+      background: var(--gtv-surface-raised);
     }
     .btn:active:not([disabled]) {
       transform: scale(0.9);
-      background: var(--tcl-surface-pressed);
+      background: var(--gtv-surface-pressed);
       transition-duration: 0.08s;
     }
     .btn:focus-visible,
     .app:focus-visible {
-      outline: 2px solid var(--tcl-accent);
+      outline: 2px solid var(--gtv-accent);
       outline-offset: 2px;
     }
     .btn[disabled],
@@ -473,21 +473,21 @@ export class TclRemoteCard extends LitElement {
       cursor: not-allowed;
     }
     .btn.active {
-      background: var(--tcl-accent);
+      background: var(--gtv-accent);
       color: #fff;
     }
     .btn-power {
-      background: var(--tcl-red);
+      background: var(--gtv-red);
       color: #fff;
     }
     .btn-power:hover:not([disabled]),
     .btn-power:active:not([disabled]) {
-      background: var(--tcl-red);
+      background: var(--gtv-red);
       filter: brightness(1.1);
     }
     .off .btn-power {
-      background: var(--tcl-surface);
-      color: var(--tcl-red);
+      background: var(--gtv-surface);
+      color: var(--gtv-red);
     }
 
     /* Apple TV style clickpad: one disc with four directions and a center. */
@@ -497,7 +497,7 @@ export class TclRemoteCard extends LitElement {
       height: 216px;
       margin: 0 auto;
       border-radius: 50%;
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
       box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 18%, transparent);
     }
     .clickpad .pad {
@@ -507,15 +507,15 @@ export class TclRemoteCard extends LitElement {
       background: transparent;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
-      color: color-mix(in srgb, var(--tcl-ink) 70%, transparent);
+      color: color-mix(in srgb, var(--gtv-ink) 70%, transparent);
     }
     .clickpad .pad:hover:not([disabled]) {
       background: transparent;
-      color: var(--tcl-ink);
+      color: var(--gtv-ink);
     }
     .clickpad .pad:active:not([disabled]) {
       transform: scale(0.85);
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
     }
     .pad-up {
       top: 4px;
@@ -539,7 +539,7 @@ export class TclRemoteCard extends LitElement {
       left: 64px;
       width: 88px;
       height: 88px;
-      background: var(--tcl-surface-raised);
+      background: var(--gtv-surface-raised);
       box-shadow:
         0 1px 3px color-mix(in srgb, #000 15%, transparent),
         inset 0 1px 0 color-mix(in srgb, #fff 20%, transparent);
@@ -548,7 +548,7 @@ export class TclRemoteCard extends LitElement {
       font-weight: 600;
       font-size: 0.95em;
       letter-spacing: 0.04em;
-      color: color-mix(in srgb, var(--tcl-ink) 75%, transparent);
+      color: color-mix(in srgb, var(--gtv-ink) 75%, transparent);
     }
 
     /* Volume as a segmented capsule. */
@@ -556,7 +556,7 @@ export class TclRemoteCard extends LitElement {
       display: flex;
       align-items: center;
       border-radius: 999px;
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
       padding: 0 4px;
     }
     .capsule .seg {
@@ -570,12 +570,12 @@ export class TclRemoteCard extends LitElement {
       background: transparent;
     }
     .capsule .seg:active:not([disabled]) {
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
     }
     .divider {
       width: 1px;
       height: 24px;
-      background: color-mix(in srgb, var(--tcl-ink) 15%, transparent);
+      background: color-mix(in srgb, var(--gtv-ink) 15%, transparent);
     }
 
     /* Control Center style slider: a thick rounded bar that fills. */
@@ -587,10 +587,10 @@ export class TclRemoteCard extends LitElement {
     .slider {
       position: relative;
       flex: 1;
-      height: var(--tcl-btn-size);
+      height: var(--gtv-btn-size);
       border-radius: 18px;
       overflow: hidden;
-      background: var(--tcl-surface);
+      background: var(--gtv-surface);
     }
     .slider input {
       -webkit-appearance: none;
@@ -601,17 +601,17 @@ export class TclRemoteCard extends LitElement {
       height: 100%;
       margin: 0;
       cursor: pointer;
-      background: linear-gradient(to right, var(--tcl-accent) var(--pct), transparent var(--pct));
+      background: linear-gradient(to right, var(--gtv-accent) var(--pct), transparent var(--pct));
     }
     .slider input::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 1px;
-      height: var(--tcl-btn-size);
+      height: var(--gtv-btn-size);
       background: transparent;
     }
     .slider input::-moz-range-thumb {
       width: 1px;
-      height: var(--tcl-btn-size);
+      height: var(--gtv-btn-size);
       border: 0;
       background: transparent;
     }
@@ -664,7 +664,7 @@ export class TclRemoteCard extends LitElement {
         0 1px 2px color-mix(in srgb, #000 18%, transparent),
         0 4px 12px -4px color-mix(in srgb, var(--app-color) 60%, transparent);
       -webkit-tap-highlight-color: transparent;
-      transition: transform 0.25s var(--tcl-ease), filter 0.2s ease;
+      transition: transform 0.25s var(--gtv-ease), filter 0.2s ease;
     }
     .app:hover:not([disabled]) {
       filter: brightness(1.08);
@@ -685,15 +685,20 @@ declare global {
     customCards?: Array<Record<string, unknown>>;
   }
   interface HTMLElementTagNameMap {
-    "tcl-remote-card": TclRemoteCard;
+    "google-tv-remote-card": GoogleTvRemoteCard;
   }
 }
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "tcl-remote-card",
-  name: "TCL Remote Card",
-  description: "A configurable remote for TCL Google TV / Android TV",
+  type: "google-tv-remote-card",
+  name: "Google TV Remote Card",
+  description: "An iOS-style remote for Google TV and Android TV devices (TCL, Shield, Google TV Streamer, ...)",
   preview: true,
-  documentationURL: "https://github.com/YounesN/tcl-remote-card",
+  documentationURL: "https://github.com/YounesN/google-tv-remote-card",
 });
+
+// Keep dashboards made with the card's earlier name (custom:tcl-remote-card) working.
+if (!customElements.get("tcl-remote-card")) {
+  customElements.define("tcl-remote-card", class extends GoogleTvRemoteCard {});
+}

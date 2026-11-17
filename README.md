@@ -1,18 +1,20 @@
-# TCL Remote Card
+# Google TV Remote Card
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
-[![Build](https://github.com/YounesN/tcl-remote-card/actions/workflows/build.yml/badge.svg)](https://github.com/YounesN/tcl-remote-card/actions/workflows/build.yml)
+[![Build](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml/badge.svg)](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml)
 
-A Home Assistant dashboard card that turns a **TCL Google TV / Android TV** into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
+A Home Assistant dashboard card that turns your **Google TV or Android TV** (TCL, NVIDIA Shield, Google TV Streamer, Chromecast with Google TV, Sony and more) into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
 
-![TCL Remote Card in light and dark themes](docs/preview.png)
+![Google TV Remote Card in light and dark themes](docs/preview.png)
 
 - Works with the built-in **Android TV Remote** integration. No extra add-ons or ADB needed.
 - Row-based config: choose exactly which buttons and apps appear, and in what order.
 - 30 built-in buttons, 15 built-in apps, plus your own buttons (any Android TV key or Home Assistant script) and apps.
 - Follows your Home Assistant theme in light and dark mode.
 
-> Made for modern TCL TVs running **Google TV or Android TV**, and works with any device the Android TV Remote integration supports, such as **NVIDIA Shield**, **Google TV Streamer**, **Chromecast with Google TV**, and Sony, Philips or Hisense Google TVs. One card can switch between several devices. Older TCL Roku TVs use a different integration and aren't supported. This project isn't affiliated with TCL, NVIDIA or Google.
+> Works with any device the Android TV Remote integration supports: TVs running **Google TV or Android TV** (TCL, Sony, Philips, Hisense and others), **NVIDIA Shield**, **Google TV Streamer** and **Chromecast with Google TV**. One card can switch between several devices. Roku, webOS and Tizen TVs use different integrations and aren't supported. This project isn't affiliated with Google, TCL or NVIDIA.
+>
+> Previously called *TCL Remote Card*. Existing `custom:tcl-remote-card` dashboards keep working.
 
 ---
 
@@ -55,7 +57,7 @@ You only give the card the `media_player`. It finds the matching `remote` automa
 
 ### Let Home Assistant turn the TV on
 
-When a TCL TV is off it may also turn off its network connection, and then Home Assistant can't wake it. To keep the power button working, enable the TV's network standby option. Its name varies by model and software version. Look under **Settings → System → Power & energy** for something like **Network standby**, **Wake on network**, or **Turn on with Chromecast**.
+When a TV is off it may also turn off its network connection, and then Home Assistant can't wake it. To keep the power button working, enable the TV's network standby option. Its name varies by brand and model. On TCL Google TVs, look under **Settings → System → Power & energy** for something like **Network standby**, **Wake on network**, or **Turn on with Chromecast**.
 
 ### Optional: app shortcuts in the integration
 
@@ -69,25 +71,25 @@ Under **Settings → Devices & services → Android TV Remote → Configure**, y
 
 1. Open **HACS** in Home Assistant.
 2. Click the **⋮** menu in the top right → **Custom repositories**.
-3. Add `https://github.com/YounesN/tcl-remote-card` with type **Dashboard**, then click **Add**.
-4. Search for **TCL Remote Card**, open it, and click **Download**.
+3. Add `https://github.com/YounesN/google-tv-remote-card` with type **Dashboard**, then click **Add**.
+4. Search for **Google TV Remote Card**, open it, and click **Download**.
 5. Reload your browser when prompted.
 
 ### Manual
 
-1. Download `tcl-remote-card.js` from the [latest release](https://github.com/YounesN/tcl-remote-card/releases/latest).
-2. Copy it to `/config/www/tcl-remote-card.js`.
-3. Go to **Settings → Dashboards → ⋮ → Resources → + Add resource**, enter `/local/tcl-remote-card.js`, and choose **JavaScript module**.
+1. Download `google-tv-remote-card.js` from the [latest release](https://github.com/YounesN/google-tv-remote-card/releases/latest).
+2. Copy it to `/config/www/google-tv-remote-card.js`.
+3. Go to **Settings → Dashboards → ⋮ → Resources → + Add resource**, enter `/local/google-tv-remote-card.js`, and choose **JavaScript module**.
 4. Reload your browser.
 
 ---
 
 ## 3. Add the card to a dashboard
 
-Edit a dashboard, click **+ Add card**, and search for **TCL Remote Card**. Or add a **Manual** card with:
+Edit a dashboard, click **+ Add card**, and search for **Google TV Remote Card**. Or add a **Manual** card with:
 
 ```yaml
-type: custom:tcl-remote-card
+type: custom:google-tv-remote-card
 entity: media_player.living_room_tv
 ```
 
@@ -112,8 +114,10 @@ That gives you the default layout: power / input / home / back, the clickpad, vo
 
 One card can control several devices. They appear as tabs at the top, and a green dot shows which ones are on. Each browser remembers the last tab you picked.
 
+<img src="docs/preview-multi.png" alt="Device tabs" width="360">
+
 ```yaml
-type: custom:tcl-remote-card
+type: custom:google-tv-remote-card
 entities:
   - entity: media_player.living_room_tv
     name: Living room
@@ -149,7 +153,7 @@ Each entry in `rows` is one row of the remote:
 ### Example
 
 ```yaml
-type: custom:tcl-remote-card
+type: custom:google-tv-remote-card
 entity: media_player.living_room_tv
 name: Living Room
 rows:
@@ -230,9 +234,9 @@ The card follows your theme. To fine-tune it, set these CSS variables in your th
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `--tcl-btn-size` | `56px` | Size of round buttons |
-| `--tcl-accent` | theme primary color | Volume slider fill |
-| `--tcl-red` | `#ff3b30` | Power button color |
+| `--gtv-btn-size` | `56px` | Size of round buttons |
+| `--gtv-accent` | theme primary color | Volume slider fill |
+| `--gtv-red` | `#ff3b30` | Power button color |
 
 ---
 
@@ -256,7 +260,7 @@ The card follows your theme. To fine-tune it, set these CSS variables in your th
 
 ```bash
 npm install
-npm run build      # outputs dist/tcl-remote-card.js
+npm run build      # outputs dist/google-tv-remote-card.js
 npm run watch      # rebuild on change
 npm run typecheck
 ```

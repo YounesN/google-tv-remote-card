@@ -1,5 +1,5 @@
 import { APPS, BUTTONS, DEFAULT_APPS, MEDIA_BUTTONS } from "./presets";
-import type { AppRef, ButtonRef, DeviceConfig, RowConfig, TclRemoteCardConfig } from "./types";
+import type { AppRef, ButtonRef, DeviceConfig, RowConfig, GoogleTvRemoteCardConfig } from "./types";
 
 export interface ResolvedButton {
   key: string;
@@ -115,14 +115,14 @@ export function resolveRow(row: RowConfig): ResolvedRow {
   throw new Error(`Couldn't understand row: ${JSON.stringify(row)}`);
 }
 
-export function resolveRows(config: TclRemoteCardConfig): ResolvedRow[] {
+export function resolveRows(config: GoogleTvRemoteCardConfig): ResolvedRow[] {
   const rows = config.rows ?? DEFAULT_ROWS;
   if (!Array.isArray(rows)) throw new Error("rows must be a list.");
   return rows.map(resolveRow);
 }
 
 /** Turns `entity` and/or `entities` into a validated list of devices. */
-export function resolveDevices(config: TclRemoteCardConfig): DeviceConfig[] {
+export function resolveDevices(config: GoogleTvRemoteCardConfig): DeviceConfig[] {
   const devices: DeviceConfig[] = [];
   if (config.entity) {
     devices.push({ entity: config.entity, remote_entity: config.remote_entity, name: config.name });

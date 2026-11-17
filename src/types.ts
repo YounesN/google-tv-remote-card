@@ -57,7 +57,7 @@ export interface DeviceConfig {
   icon?: string;
 }
 
-export interface TclRemoteCardConfig {
+export interface GoogleTvRemoteCardConfig {
   type: string;
   /** A single device. Use `entities` for several. */
   entity?: string;
