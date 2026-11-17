@@ -1,3 +1,4 @@
+import { APP_LOGOS } from "./app-logos";
 import { APPS, BUTTONS, DEFAULT_APPS, MEDIA_BUTTONS } from "./presets";
 import type { AppRef, ButtonRef, DeviceConfig, RowConfig, GoogleTvRemoteCardConfig } from "./types";
 
@@ -18,6 +19,10 @@ export interface ResolvedApp {
   color: string;
   text_color?: string;
   icon?: string;
+  /** SVG path (24x24) of a built-in app's logo. */
+  logo?: string;
+  /** Short text shown when there's no logo or icon. */
+  badge?: string;
 }
 
 export type ResolvedRow =
@@ -65,12 +70,12 @@ function resolveApp(ref: AppRef): ResolvedApp {
     if (!def) {
       throw new Error(`Unknown app "${ref}". Valid apps: ${Object.keys(APPS).join(", ")}. Or define one with name and activity.`);
     }
-    return { ...def };
+    return { ...def, logo: APP_LOGOS[ref] };
   }
   if (!ref || typeof ref !== "object" || !ref.name || !ref.activity) {
     throw new Error("A custom app needs `name` and `activity` (package name or deep link).");
   }
-  return { name: ref.name, activity: ref.activity, color: ref.color ?? "var(--primary-color)", text_color: ref.text_color, icon: ref.icon };
+  return { name: ref.name, activity: ref.activity, color: ref.color ?? "var(--primary-color)", text_color: ref.text_color, icon: ref.icon, badge: ref.name.trim().charAt(0).toUpperCase() };
 }
 
 const buttonRow = (refs: ButtonRef[]): ResolvedRow => {

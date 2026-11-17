@@ -5,7 +5,7 @@
 
 A Home Assistant dashboard card that turns your **Google TV or Android TV** (TCL, NVIDIA Shield, Google TV Streamer, Chromecast with Google TV, Sony and more) into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
 
-![Google TV Remote Card in light and dark themes](docs/preview.png)
+![Google TV Remote Card: device tabs and app icons in light and dark themes](docs/preview.png)
 
 - Works with the built-in **Android TV Remote** integration. No extra add-ons or ADB needed.
 - Row-based config: choose exactly which buttons and apps appear, and in what order.
@@ -207,11 +207,13 @@ rows:
 
 | Name | | Name | | Name |
 | --- | --- | --- | --- | --- |
-| `netflix` | | `max` | | `spotify` |
+| `netflix` | | `max` (HBO Max) | | `spotify` |
 | `youtube` | | `apple_tv` | | `twitch` |
 | `youtube_music` | | `paramount_plus` | | `crunchyroll` |
 | `prime_video` | | `peacock` | | `google_tv` |
 | `disney_plus` | | `hulu` | | `plex` |
+
+Built-in apps show their logo on a colored tile, like app icons on a phone. Logos come from [Simple Icons](https://simpleicons.org) (CC0). Apps without a free logo (Prime Video, Disney+, Hulu, Peacock) show a short text badge. All logos are trademarks of their owners and are only used to identify each app.
 
 #### Custom apps
 
@@ -225,7 +227,7 @@ rows:
         activity: org.xbmc.kodi
         color: "#17b2e7"       # tile color (optional)
         text_color: "#ffffff"  # label color (optional)
-        icon: mdi:kodi         # icon before the label (optional)
+        icon: mdi:kodi         # icon on the tile (optional, defaults to the first letter)
 ```
 
 **Finding an app's package name:** open the app on the TV, then in Home Assistant go to **Developer tools → States**, find your `media_player`, and read its `app_id` attribute.
@@ -239,6 +241,7 @@ The card follows your theme. To fine-tune it, set these CSS variables in your th
 | `--gtv-btn-size` | `56px` | Size of round buttons |
 | `--gtv-accent` | theme primary color | Volume slider fill |
 | `--gtv-red` | `#ff3b30` | Power button color |
+| `--gtv-app-size` | `56px` | Size of app icons |
 
 ---
 
