@@ -70,25 +70,27 @@ export const BUTTONS: Record<string, ButtonDef> = {
 };
 
 /**
- * Built-in apps, launched with remote.turn_on(activity=...) using their
- * Android TV package name. Package names launch the app directly; web links
- * (https://...) make some TVs ask whether to open them in the app or a browser.
+ * Built-in apps, launched with remote.turn_on(activity=...) using a deep link.
+ * Launching by package name goes through the Play Store (market://launch),
+ * which many TVs now ignore silently. An app's own scheme (plex://,
+ * vnd.youtube://) opens only that app; https links work everywhere but some
+ * TVs ask whether to open them in the app or a browser.
  */
 export const APPS: Record<string, AppDef> = {
-  netflix: { name: "Netflix", activity: "com.netflix.ninja", color: "#e50914" },
-  youtube: { name: "YouTube", activity: "com.google.android.youtube.tv", color: "#ff0000" },
-  youtube_music: { name: "YT Music", activity: "com.google.android.youtube.tvmusic", color: "#ff0000" },
-  prime_video: { name: "Prime Video", activity: "com.amazon.amazonvideo.livingroom", color: "#00a8e1", badge: "prime" },
-  disney_plus: { name: "Disney+", activity: "com.disney.disneyplus", color: "#113ccf", badge: "D+" },
-  hulu: { name: "Hulu", activity: "com.hulu.livingroomplus", color: "#1ce783", text_color: "#0b0c0f", badge: "hulu" },
-  max: { name: "HBO Max", activity: "com.wbd.stream", color: "#000000" },
-  apple_tv: { name: "Apple TV", activity: "com.apple.atve.androidtv.appletv", color: "#000000" },
-  paramount_plus: { name: "Paramount+", activity: "com.cbs.ott", color: "#0064ff" },
-  peacock: { name: "Peacock", activity: "com.peacocktv.peacockandroid", color: "#000000", badge: "P" },
-  plex: { name: "Plex", activity: "com.plexapp.android", color: "#e5a00d" },
-  spotify: { name: "Spotify", activity: "com.spotify.tv.android", color: "#1db954" },
-  twitch: { name: "Twitch", activity: "tv.twitch.android.app", color: "#9146ff" },
-  crunchyroll: { name: "Crunchyroll", activity: "com.crunchyroll.crunchyroid", color: "#f47521" },
+  netflix: { name: "Netflix", activity: "netflix://", color: "#e50914" },
+  youtube: { name: "YouTube", activity: "vnd.youtube://", color: "#ff0000" },
+  youtube_music: { name: "YT Music", activity: "https://music.youtube.com", color: "#ff0000" },
+  prime_video: { name: "Prime Video", activity: "https://app.primevideo.com", color: "#00a8e1", badge: "prime" },
+  disney_plus: { name: "Disney+", activity: "https://www.disneyplus.com", color: "#113ccf", badge: "D+" },
+  hulu: { name: "Hulu", activity: "https://www.hulu.com", color: "#1ce783", text_color: "#0b0c0f", badge: "hulu" },
+  max: { name: "HBO Max", activity: "https://play.hbomax.com", color: "#000000" },
+  apple_tv: { name: "Apple TV", activity: "https://tv.apple.com", color: "#000000" },
+  paramount_plus: { name: "Paramount+", activity: "https://www.paramountplus.com", color: "#0064ff" },
+  peacock: { name: "Peacock", activity: "https://www.peacocktv.com", color: "#000000", badge: "P" },
+  plex: { name: "Plex", activity: "plex://", color: "#e5a00d" },
+  spotify: { name: "Spotify", activity: "spotify://", color: "#1db954" },
+  twitch: { name: "Twitch", activity: "twitch://home", color: "#9146ff" },
+  crunchyroll: { name: "Crunchyroll", activity: "https://www.crunchyroll.com", color: "#f47521" },
   google_tv: { name: "Google TV", activity: "com.google.android.videos", color: "#4285f4" },
 };
 
