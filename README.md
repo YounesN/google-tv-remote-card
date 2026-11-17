@@ -93,7 +93,9 @@ type: custom:google-tv-remote-card
 entity: media_player.living_room_tv
 ```
 
-That gives you the default layout: power / input / home / back, the clickpad, volume buttons, media controls, and Netflix, YouTube, Prime Video and Disney+.
+Everything can be set up in the **visual editor**: pick one or more devices, then add, remove, reorder and change rows (buttons, D-pad, volume buttons or slider, media controls, apps). Rows with custom buttons or apps, and per-device tab names and icons, are edited in the code editor.
+
+The minimal config gives you the default layout: power / input / home / back, the clickpad, volume buttons, media controls, and Netflix, YouTube, Prime Video and Disney+.
 
 ---
 
