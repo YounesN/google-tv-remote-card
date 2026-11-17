@@ -35,10 +35,10 @@ export const BUTTONS: Record<string, ButtonDef> = {
     action: ({ hass, mediaPlayer }) => hass.callService("media_player", "toggle", { entity_id: mediaPlayer }),
   },
   source: { icon: "mdi:import", name: "Input", command: "TV_INPUT" },
-  home: { icon: "mdi:home", name: "Home", command: "HOME" },
+  home: { icon: "mdi:home-outline", name: "Home", command: "HOME" },
   back: { icon: "mdi:arrow-left", name: "Back", command: "BACK" },
   menu: { icon: "mdi:menu", name: "Menu", command: "MENU" },
-  settings: { icon: "mdi:cog", name: "Settings", command: "SETTINGS" },
+  settings: { icon: "mdi:cog-outline", name: "Settings", command: "SETTINGS" },
   info: { icon: "mdi:information-outline", name: "Info", command: "INFO" },
   guide: { icon: "mdi:television-guide", name: "Guide", command: "GUIDE" },
   search: { icon: "mdi:magnify", name: "Search", command: "SEARCH" },
@@ -92,4 +92,3 @@ export const APPS: Record<string, AppDef> = {
 
 export const DEFAULT_APPS = ["netflix", "youtube", "prime_video", "disney_plus"];
 export const MEDIA_BUTTONS = ["rewind", "play_pause", "fast_forward"];
-export const VOLUME_BUTTONS = ["volume_down", "mute", "volume_up"];

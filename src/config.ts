@@ -1,4 +1,4 @@
-import { APPS, BUTTONS, DEFAULT_APPS, MEDIA_BUTTONS, VOLUME_BUTTONS } from "./presets";
+import { APPS, BUTTONS, DEFAULT_APPS, MEDIA_BUTTONS } from "./presets";
 import type { AppRef, ButtonRef, RowConfig, TclRemoteCardConfig } from "./types";
 
 export interface ResolvedButton {
@@ -24,6 +24,7 @@ export type ResolvedRow =
   | { type: "buttons"; buttons: ResolvedButton[] }
   | { type: "dpad" }
   | { type: "volume_slider" }
+  | { type: "volume_buttons" }
   | { type: "apps"; apps: ResolvedApp[] };
 
 export const DEFAULT_ROWS: RowConfig[] = [
@@ -84,7 +85,7 @@ export function resolveRow(row: RowConfig): ResolvedRow {
         return { type: "dpad" };
       case "volume":
       case "volume_buttons":
-        return buttonRow(VOLUME_BUTTONS);
+        return { type: "volume_buttons" };
       case "volume_slider":
         return { type: "volume_slider" };
       case "media":
@@ -102,7 +103,7 @@ export function resolveRow(row: RowConfig): ResolvedRow {
     if ("dpad" in row) return { type: "dpad" };
     if ("volume" in row) {
       if (row.volume === "slider") return { type: "volume_slider" };
-      if (row.volume === "buttons" || row.volume == null) return buttonRow(VOLUME_BUTTONS);
+      if (row.volume === "buttons" || row.volume == null) return { type: "volume_buttons" };
       throw new Error(`volume must be "buttons" or "slider", got "${row.volume}".`);
     }
     if ("apps" in row) {
