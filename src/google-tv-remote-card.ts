@@ -5,7 +5,7 @@ import { BUTTONS } from "./presets";
 import "./editor";
 import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.4.1";
+export const CARD_VERSION = "0.4.2";
 
 console.info(
   `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
