@@ -3,16 +3,16 @@
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
 [![Build](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml/badge.svg)](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml)
 
-A Home Assistant dashboard card that turns your **Google TV or Android TV** (TCL, NVIDIA Shield, Google TV Streamer, Chromecast with Google TV, Sony and more) into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
+A Home Assistant dashboard card that turns your **Google TV or Android TV** device, whether a TV, an NVIDIA Shield or a Google TV Streamer, into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
 
 ![Google TV Remote Card: device tabs and app icons in light and dark themes](docs/preview.png)
 
 - Works with the built-in **Android TV Remote** integration. No extra add-ons or ADB needed.
 - Row-based config: choose exactly which buttons and apps appear, and in what order.
-- 30 built-in buttons, 15 built-in apps, plus your own buttons (any Android TV key or Home Assistant script) and apps.
+- 29 built-in buttons, 15 built-in apps, plus your own buttons (any Android TV key or Home Assistant script) and apps.
 - Follows your Home Assistant theme in light and dark mode.
 
-> Works with any device the Android TV Remote integration supports: TVs running **Google TV or Android TV** (TCL, Sony, Philips, Hisense and others), **NVIDIA Shield**, **Google TV Streamer** and **Chromecast with Google TV**. One card can switch between several devices. Roku, webOS and Tizen TVs use different integrations and aren't supported. This project isn't affiliated with Google, TCL or NVIDIA.
+> Works with any device the Android TV Remote integration supports: TVs running **Google TV or Android TV** (Sony, TCL, Hisense, Philips and others), **NVIDIA Shield**, **Google TV Streamer** and **Chromecast with Google TV**. One card can switch between several devices. Roku, webOS and Tizen TVs use different integrations and aren't supported. This project isn't affiliated with Google, NVIDIA or any TV maker.
 >
 > Previously called *TCL Remote Card*. Existing `custom:tcl-remote-card` dashboards keep working.
 
@@ -30,7 +30,7 @@ A Home Assistant dashboard card that turns your **Google TV or Android TV** (TCL
 
 ## 1. Pair your TV with Home Assistant
 
-The card talks to your TV through Home Assistant's official [Android TV Remote](https://www.home-assistant.io/integrations/androidtv_remote/) integration, which uses the same protocol as the Google TV app on your phone.
+These steps say "TV", but they're the same for a Shield or a Google TV Streamer. The card talks to your TV through Home Assistant's official [Android TV Remote](https://www.home-assistant.io/integrations/androidtv_remote/) integration, which uses the same protocol as the Google TV app on your phone.
 
 ### Before you start
 
@@ -57,7 +57,7 @@ You only give the card the `media_player`. It finds the matching `remote` automa
 
 ### Let Home Assistant turn the TV on
 
-When a TV is off it may also turn off its network connection, and then Home Assistant can't wake it. To keep the power button working, enable the TV's network standby option. Its name varies by brand and model. On TCL Google TVs, look under **Settings → System → Power & energy** for something like **Network standby**, **Wake on network**, or **Turn on with Chromecast**.
+When a TV is off it may also turn off its network connection, and then Home Assistant can't wake it. To keep the power button working, enable the TV's network standby option. Its name varies by brand and model. On most Google TVs, look under **Settings → System → Power & energy** for something like **Network standby**, **Wake on network**, or **Turn on with Chromecast**.
 
 ### Optional: app shortcuts in the integration
 
@@ -222,7 +222,6 @@ Any installed app can be added with a deep link or its package name. Deep links 
 - An app's own link, such as `plex://`, `netflix://` or `vnd.youtube://`, opens that app directly.
 - A web link (`https://…`) also works, but some TVs ask whether to open it in the app or in a browser. Pick the app and choose **Always** to stop the question.
 - A package name, such as `org.xbmc.kodi`, is launched through the Play Store. Because of a Play Store change, many TVs now ignore this without any error, so use it only for apps that have no deep link.
-
 
 ```yaml
 rows:
