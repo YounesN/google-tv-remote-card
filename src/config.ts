@@ -1,5 +1,5 @@
 import { APPS, BUTTONS, DEFAULT_APPS, MEDIA_BUTTONS } from "./presets";
-import type { AppRef, ButtonRef, RowConfig, TclRemoteCardConfig } from "./types";
+import type { AppRef, ButtonRef, DeviceConfig, RowConfig, TclRemoteCardConfig } from "./types";
 
 export interface ResolvedButton {
   key: string;
@@ -119,4 +119,30 @@ export function resolveRows(config: TclRemoteCardConfig): ResolvedRow[] {
   const rows = config.rows ?? DEFAULT_ROWS;
   if (!Array.isArray(rows)) throw new Error("rows must be a list.");
   return rows.map(resolveRow);
+}
+
+/** Turns `entity` and/or `entities` into a validated list of devices. */
+export function resolveDevices(config: TclRemoteCardConfig): DeviceConfig[] {
+  const devices: DeviceConfig[] = [];
+  if (config.entity) {
+    devices.push({ entity: config.entity, remote_entity: config.remote_entity, name: config.name });
+  }
+  if (config.entities !== undefined) {
+    if (!Array.isArray(config.entities)) throw new Error("entities must be a list.");
+    for (const item of config.entities) {
+      devices.push(typeof item === "string" ? { entity: item } : { ...item });
+    }
+  }
+  if (!devices.length) {
+    throw new Error("Please set 'entity' (or 'entities') to a media_player entity, e.g. media_player.living_room_tv");
+  }
+  for (const d of devices) {
+    if (!d || typeof d.entity !== "string" || !d.entity.startsWith("media_player.")) {
+      throw new Error(`"${d?.entity ?? JSON.stringify(d)}" isn't a media_player entity, e.g. media_player.living_room_tv`);
+    }
+    if (d.remote_entity && !d.remote_entity.startsWith("remote.")) {
+      throw new Error(`'remote_entity' must be a remote entity, e.g. remote.living_room_tv (got "${d.remote_entity}")`);
+    }
+  }
+  return devices;
 }

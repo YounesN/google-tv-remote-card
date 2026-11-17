@@ -12,7 +12,7 @@ A Home Assistant dashboard card that turns a **TCL Google TV / Android TV** into
 - 30 built-in buttons, 15 built-in apps, plus your own buttons (any Android TV key or Home Assistant script) and apps.
 - Follows your Home Assistant theme in light and dark mode.
 
-> Made for modern TCL TVs running **Google TV or Android TV**. Older TCL Roku TVs use a different integration and aren't supported. This project isn't affiliated with TCL.
+> Made for modern TCL TVs running **Google TV or Android TV**, and works with any device the Android TV Remote integration supports, such as **NVIDIA Shield**, **Google TV Streamer**, **Chromecast with Google TV**, and Sony, Philips or Hisense Google TVs. One card can switch between several devices. Older TCL Roku TVs use a different integration and aren't supported. This project isn't affiliated with TCL, NVIDIA or Google.
 
 ---
 
@@ -99,11 +99,37 @@ That gives you the default layout: power / input / home / back, the clickpad, vo
 
 | Option | Required | Description |
 | --- | --- | --- |
-| `entity` | yes | The TV's `media_player` entity. |
+| `entity` | yes\* | The TV's `media_player` entity. |
+| `entities` | yes\* | Several devices to switch between. See [Multiple devices](#multiple-devices). |
 | `remote_entity` | no | The TV's `remote` entity. Only needed if the card can't find it by itself. |
 | `name` | no | Title shown on the card. Defaults to the TV's name. |
 | `show_header` | no | Set to `false` to hide the title and current app. |
 | `rows` | no | The rows of the remote, top to bottom. See below. Defaults to the layout above. |
+
+\* Set `entity`, `entities`, or both.
+
+### Multiple devices
+
+One card can control several devices. They appear as tabs at the top, and a green dot shows which ones are on. Each browser remembers the last tab you picked.
+
+```yaml
+type: custom:tcl-remote-card
+entities:
+  - entity: media_player.living_room_tv
+    name: Living room
+    icon: mdi:television
+  - entity: media_player.shield
+    name: Shield
+    icon: mdi:play-box-outline
+  - media_player.bedroom_streamer      # just the entity works too
+rows:
+  - [power, source, home, back]
+  - dpad
+  - volume: slider
+  - apps: [netflix, youtube, plex]
+```
+
+Each device accepts `entity`, `name`, `icon` and `remote_entity`. All devices share the same `rows`. When devices have icons, the tabs that aren't selected shrink to just the icon, so long names never get cut off.
 
 ### Rows
 

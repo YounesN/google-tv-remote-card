@@ -1,8 +1,8 @@
 import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { resolveRows, type ResolvedApp, type ResolvedButton, type ResolvedRow } from "./config";
+import { resolveDevices, resolveRows, type ResolvedApp, type ResolvedButton, type ResolvedRow } from "./config";
 import { BUTTONS } from "./presets";
-import type { HomeAssistant, TclRemoteCardConfig } from "./types";
+import type { DeviceConfig, HomeAssistant, TclRemoteCardConfig } from "./types";
 
 export const CARD_VERSION = "0.1.0";
 
@@ -17,23 +17,56 @@ export class TclRemoteCard extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: TclRemoteCardConfig;
   @state() private _rows: ResolvedRow[] = [];
+  @state() private _devices: DeviceConfig[] = [];
+  @state() private _selected = 0;
   /** Volume the user is dragging to, shown until the TV reports back. */
   @state() private _pendingVolume?: number;
 
   public setConfig(config: TclRemoteCardConfig): void {
-    if (!config?.entity || typeof config.entity !== "string" || !config.entity.startsWith("media_player.")) {
-      throw new Error("Please set 'entity' to a media_player entity, e.g. media_player.living_room_tv");
-    }
-    if (config.remote_entity && !config.remote_entity.startsWith("remote.")) {
-      throw new Error("'remote_entity' must be a remote entity, e.g. remote.living_room_tv");
-    }
-    // Throws a readable error for an invalid row, which HA shows in the card.
+    if (!config) throw new Error("Invalid configuration");
+    // Both throw a readable error for invalid config, which HA shows in the card.
+    this._devices = resolveDevices(config);
     this._rows = resolveRows(config);
     this._config = { ...config };
+    const saved = this._loadSelection();
+    this._selected = saved !== undefined && saved < this._devices.length ? saved : 0;
+    this._pendingVolume = undefined;
+  }
+
+  /** The device currently shown. */
+  private get _device(): DeviceConfig {
+    return this._devices[this._selected] ?? this._devices[0];
+  }
+
+  private get _storageKey(): string {
+    return `tcl-remote-card:${this._devices.map((d) => d.entity).join(",")}`;
+  }
+
+  private _loadSelection(): number | undefined {
+    if (this._devices.length < 2) return undefined;
+    try {
+      const value = window.localStorage.getItem(this._storageKey);
+      return value === null ? undefined : Number(value);
+    } catch {
+      return undefined;
+    }
+  }
+
+  private _select(index: number): void {
+    if (index === this._selected) return;
+    this._haptic();
+    this._selected = index;
+    this._pendingVolume = undefined;
+    try {
+      window.localStorage.setItem(this._storageKey, String(index));
+    } catch {
+      // Storage can be unavailable (private mode); the choice just isn't remembered.
+    }
   }
 
   public getCardSize(): number {
-    return this._rows.reduce((size, row) => size + (row.type === "dpad" ? 3 : 1), this._showHeader ? 1 : 0);
+    const top = (this._showHeader ? 1 : 0) + (this._devices.length > 1 ? 1 : 0);
+    return this._rows.reduce((size, row) => size + (row.type === "dpad" ? 3 : 1), top);
   }
 
   public static getStubConfig(hass: HomeAssistant): Partial<TclRemoteCardConfig> {
@@ -51,22 +84,23 @@ export class TclRemoteCard extends LitElement {
    */
   private get _remoteEntity(): string | undefined {
     if (!this._config || !this.hass) return undefined;
-    if (this._config.remote_entity) return this._config.remote_entity;
-    const deviceId = this.hass.entities?.[this._config.entity]?.device_id;
+    const device = this._device;
+    if (device.remote_entity) return device.remote_entity;
+    const deviceId = this.hass.entities?.[device.entity]?.device_id;
     if (deviceId && this.hass.entities) {
       const match = Object.values(this.hass.entities).find(
         (e) => e.device_id === deviceId && e.entity_id.startsWith("remote."),
       );
       if (match) return match.entity_id;
     }
-    const guess = this._config.entity.replace(/^media_player\./, "remote.");
+    const guess = device.entity.replace(/^media_player\./, "remote.");
     return this.hass.states[guess] ? guess : undefined;
   }
 
   protected updated(changed: PropertyValues): void {
     // Drop the optimistic slider value once HA reports the new volume.
     if (changed.has("hass") && this._pendingVolume !== undefined && this._config && this.hass) {
-      const level = this.hass.states[this._config.entity]?.attributes.volume_level;
+      const level = this.hass.states[this._device.entity]?.attributes.volume_level;
       if (typeof level === "number" && Math.abs(level - this._pendingVolume) < 0.011) this._pendingVolume = undefined;
     }
   }
@@ -80,7 +114,7 @@ export class TclRemoteCard extends LitElement {
     this._haptic();
     const remote = this._remoteEntity;
     if (button.builtin) {
-      await BUTTONS[button.builtin].action?.({ hass: this.hass, mediaPlayer: this._config.entity, remote });
+      await BUTTONS[button.builtin].action?.({ hass: this.hass, mediaPlayer: this._device.entity, remote });
     } else if (button.service) {
       const [domain, service] = button.service.split(".");
       await this.hass.callService(domain, service, button.data ?? {});
@@ -100,7 +134,7 @@ export class TclRemoteCard extends LitElement {
     if (!this.hass || !this._config) return;
     const level = Number((ev.target as HTMLInputElement).value) / 100;
     this._pendingVolume = level;
-    await this.hass.callService("media_player", "volume_set", { entity_id: this._config.entity, volume_level: level });
+    await this.hass.callService("media_player", "volume_set", { entity_id: this._device.entity, volume_level: level });
   }
 
   private _renderButton(button: ResolvedButton, extraClass = ""): TemplateResult {
@@ -146,7 +180,7 @@ export class TclRemoteCard extends LitElement {
   }
 
   private _renderVolumeSlider(): TemplateResult {
-    const attrs = this.hass!.states[this._config!.entity]?.attributes ?? {};
+    const attrs = this.hass!.states[this._device.entity]?.attributes ?? {};
     const level = this._pendingVolume ?? (typeof attrs.volume_level === "number" ? attrs.volume_level : undefined);
     const supported = level !== undefined;
     const muted = !!attrs.is_volume_muted;
@@ -211,16 +245,53 @@ export class TclRemoteCard extends LitElement {
     }
   }
 
+  private _isOn(entity: string): boolean {
+    const state = this.hass?.states[entity]?.state;
+    return !!state && !["off", "unavailable", "unknown", "standby"].includes(state);
+  }
+
+  private _deviceName(device: DeviceConfig): string {
+    return device.name ?? this.hass?.states[device.entity]?.attributes.friendly_name ?? device.entity;
+  }
+
+  private _renderSwitcher(): TemplateResult | typeof nothing {
+    if (this._devices.length < 2) return nothing;
+    return html`
+      <div class="switcher" role="tablist">
+        ${this._devices.map(
+          (device, i) => html`
+            <button
+              class="tab ${i === this._selected ? "selected" : ""} ${device.icon ? "has-icon" : ""}"
+              role="tab"
+              aria-selected=${i === this._selected ? "true" : "false"}
+              title=${this._deviceName(device)}
+              @click=${() => this._select(i)}
+            >
+              <span class="dot ${this._isOn(device.entity) ? "on" : ""}"></span>
+              ${device.icon ? html`<ha-icon .icon=${device.icon}></ha-icon>` : nothing}
+              <span class="tab-name">${this._deviceName(device)}</span>
+            </button>
+          `,
+        )}
+      </div>
+    `;
+  }
+
   protected render() {
     if (!this._config || !this.hass) return nothing;
-    const stateObj = this.hass.states[this._config.entity];
+    const device = this._device;
+    const stateObj = this.hass.states[device.entity];
     if (!stateObj) {
-      return html`<ha-card><div class="warning">Entity not found: ${this._config.entity}</div></ha-card>`;
+      return html`<ha-card>
+        ${this._renderSwitcher()}
+        <div class="warning">Entity not found: ${device.entity}</div>
+      </ha-card>`;
     }
-    const name = this._config.name ?? stateObj.attributes.friendly_name ?? this._config.entity;
-    const isOn = !["off", "unavailable", "unknown", "standby"].includes(stateObj.state);
+    const name = this._deviceName(device);
+    const isOn = this._isOn(device.entity);
     return html`
       <ha-card class=${isOn ? "on" : "off"}>
+        ${this._renderSwitcher()}
         ${this._showHeader
           ? html`<div class="header">
               <span class="name">${name}</span>
@@ -230,7 +301,7 @@ export class TclRemoteCard extends LitElement {
         ${this._remoteEntity
           ? nothing
           : html`<div class="warning">
-              No remote entity found for ${this._config.entity}. Set <code>remote_entity</code> in the card config.
+              No remote entity found for ${device.entity}. Set <code>remote_entity</code> in the card config.
             </div>`}
         <div class="rows">${this._rows.map((row) => this._renderRow(row))}</div>
       </ha-card>
@@ -259,6 +330,72 @@ export class TclRemoteCard extends LitElement {
       --mdc-icon-size: 24px;
       display: inline-flex;
       pointer-events: none;
+    }
+    .switcher {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 16px;
+      border-radius: 999px;
+      background: var(--tcl-surface);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .switcher::-webkit-scrollbar {
+      display: none;
+    }
+    .tab {
+      flex: 1 1 0;
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--secondary-text-color);
+      font: inherit;
+      font-size: 0.85em;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tab ha-icon {
+      --mdc-icon-size: 18px;
+    }
+    .tab-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* With icons, unselected tabs collapse to icon only so names never get cut off. */
+    .tab.has-icon:not(.selected) {
+      flex: 0 0 auto;
+    }
+    .tab.has-icon:not(.selected) .tab-name {
+      display: none;
+    }
+    .tab.selected {
+      background: var(--card-background-color, #fff);
+      color: var(--tcl-ink);
+      box-shadow: 0 1px 4px color-mix(in srgb, #000 18%, transparent);
+    }
+    .tab:focus-visible {
+      outline: 2px solid var(--tcl-accent);
+      outline-offset: 1px;
+    }
+    .dot {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--tcl-ink) 25%, transparent);
+    }
+    .dot.on {
+      background: #34c759;
     }
     .header {
       display: flex;
