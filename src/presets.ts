@@ -70,16 +70,16 @@ export const BUTTONS: Record<string, ButtonDef> = {
 };
 
 /**
- * Built-in apps, launched with remote.turn_on(activity=...). Deep links are
- * used where the Android TV Remote docs recommend them; otherwise the
- * Android TV package name.
+ * Built-in apps, launched with remote.turn_on(activity=...) using their
+ * Android TV package name. Package names launch the app directly; web links
+ * (https://...) make some TVs ask whether to open them in the app or a browser.
  */
 export const APPS: Record<string, AppDef> = {
-  netflix: { name: "Netflix", activity: "https://www.netflix.com/title", color: "#e50914" },
-  youtube: { name: "YouTube", activity: "https://www.youtube.com", color: "#ff0000" },
+  netflix: { name: "Netflix", activity: "com.netflix.ninja", color: "#e50914" },
+  youtube: { name: "YouTube", activity: "com.google.android.youtube.tv", color: "#ff0000" },
   youtube_music: { name: "YT Music", activity: "com.google.android.youtube.tvmusic", color: "#ff0000" },
-  prime_video: { name: "Prime Video", activity: "https://app.primevideo.com", color: "#00a8e1", badge: "prime" },
-  disney_plus: { name: "Disney+", activity: "https://www.disneyplus.com", color: "#113ccf", badge: "D+" },
+  prime_video: { name: "Prime Video", activity: "com.amazon.amazonvideo.livingroom", color: "#00a8e1", badge: "prime" },
+  disney_plus: { name: "Disney+", activity: "com.disney.disneyplus", color: "#113ccf", badge: "D+" },
   hulu: { name: "Hulu", activity: "com.hulu.livingroomplus", color: "#1ce783", text_color: "#0b0c0f", badge: "hulu" },
   max: { name: "HBO Max", activity: "com.wbd.stream", color: "#000000" },
   apple_tv: { name: "Apple TV", activity: "com.apple.atve.androidtv.appletv", color: "#000000" },

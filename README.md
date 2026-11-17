@@ -217,7 +217,8 @@ Built-in apps show their logo on a colored tile, like app icons on a phone. Logo
 
 #### Custom apps
 
-Any installed app can be added by its package name (or a deep link):
+Any installed app can be added by its package name. Package names open the app directly. A web link (`https://…`) also works, but some TVs then ask whether to open it in the app or in a browser.
+
 
 ```yaml
 rows:
@@ -253,7 +254,7 @@ The card follows your theme. To fine-tune it, set these CSS variables in your th
 
 **Buttons work but the power button can't turn the TV on.** Enable network standby on the TV (see [Let Home Assistant turn the TV on](#let-home-assistant-turn-the-tv-on)).
 
-**An app tile does nothing.** The built-in package name may differ in your region. Open the app on the TV, read `app_id` as described in [Custom apps](#custom-apps), and add it as a custom app.
+**An app tile does nothing.** Since 0.4.1 the card shows a message at the bottom of the screen when Home Assistant can't open an app. The built-in package name may differ on your device or region. Open the app on the TV, read `app_id` as described in [Custom apps](#custom-apps), and add it as a custom app.
 
 **The TV became unavailable after a router change.** Its IP address probably changed. Give it a fixed address in your router. If it still doesn't reconnect, delete the integration entry and pair again.
 
