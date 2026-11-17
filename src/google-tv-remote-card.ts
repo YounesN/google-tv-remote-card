@@ -1,10 +1,10 @@
 import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { resolveDevices, resolveRows, type ResolvedApp, type ResolvedButton, type ResolvedRow } from "./config";
 import { BUTTONS } from "./presets";
 import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.2.0";
+export const CARD_VERSION = "0.2.1";
 
 console.info(
   `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
@@ -12,7 +12,6 @@ console.info(
   "color: #4285f4; background: white; font-weight: 700;",
 );
 
-@customElement("google-tv-remote-card")
 export class GoogleTvRemoteCard extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: GoogleTvRemoteCardConfig;
@@ -689,16 +688,24 @@ declare global {
   }
 }
 
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "google-tv-remote-card",
-  name: "Google TV Remote Card",
-  description: "An iOS-style remote for Google TV and Android TV devices (TCL, Shield, Google TV Streamer, ...)",
-  preview: true,
-  documentationURL: "https://github.com/YounesN/google-tv-remote-card",
-});
-
+// Define the elements only once. The file can be loaded twice, for example when
+// an old manual resource and the HACS resource both point at a copy, and a
+// second define() would throw and make Home Assistant report the load as failed.
+if (!customElements.get("google-tv-remote-card")) {
+  customElements.define("google-tv-remote-card", GoogleTvRemoteCard);
+}
 // Keep dashboards made with the card's earlier name (custom:tcl-remote-card) working.
 if (!customElements.get("tcl-remote-card")) {
   customElements.define("tcl-remote-card", class extends GoogleTvRemoteCard {});
+}
+
+window.customCards = window.customCards || [];
+if (!window.customCards.some((card) => card.type === "google-tv-remote-card")) {
+  window.customCards.push({
+    type: "google-tv-remote-card",
+    name: "Google TV Remote Card",
+    description: "An iOS-style remote for Google TV and Android TV devices (TCL, Shield, Google TV Streamer, ...)",
+    preview: true,
+    documentationURL: "https://github.com/YounesN/google-tv-remote-card",
+  });
 }
