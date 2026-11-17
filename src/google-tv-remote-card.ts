@@ -5,7 +5,7 @@ import { BUTTONS } from "./presets";
 import "./editor";
 import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.4.0";
+export const CARD_VERSION = "0.4.1";
 
 console.info(
   `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
@@ -113,32 +113,57 @@ export class GoogleTvRemoteCard extends LitElement {
     this.dispatchEvent(new CustomEvent("haptic", { detail: "light", bubbles: true, composed: true }));
   }
 
+  /** Shows a Home Assistant toast at the bottom of the screen. */
+  private _toast(message: string): void {
+    this.dispatchEvent(new CustomEvent("hass-notification", { detail: { message }, bubbles: true, composed: true }));
+  }
+
+  /** Runs a service call and shows a toast if it fails, instead of failing silently. */
+  private async _call(what: string, run: () => Promise<unknown>): Promise<void> {
+    try {
+      await run();
+    } catch (err: any) {
+      const reason = err?.message ?? err?.error?.message ?? String(err);
+      this._toast(`${what} failed: ${reason}`);
+      console.warn(`google-tv-remote-card: ${what} failed`, err);
+    }
+  }
+
   private async _press(button: ResolvedButton): Promise<void> {
     if (!this.hass || !this._config) return;
     this._haptic();
+    const hass = this.hass;
     const remote = this._remoteEntity;
-    if (button.builtin) {
-      await BUTTONS[button.builtin].action?.({ hass: this.hass, mediaPlayer: this._device.entity, remote });
-    } else if (button.service) {
-      const [domain, service] = button.service.split(".");
-      await this.hass.callService(domain, service, button.data ?? {});
-    } else if (button.command && remote) {
-      await this.hass.callService("remote", "send_command", { entity_id: remote, command: button.command });
-    }
+    await this._call(button.name, async () => {
+      if (button.builtin) {
+        await BUTTONS[button.builtin].action?.({ hass, mediaPlayer: this._device.entity, remote });
+      } else if (button.service) {
+        const [domain, service] = button.service.split(".");
+        await hass.callService(domain, service, button.data ?? {});
+      } else if (button.command && remote) {
+        await hass.callService("remote", "send_command", { entity_id: remote, command: button.command });
+      }
+    });
   }
 
   private async _launch(app: ResolvedApp): Promise<void> {
     const remote = this._remoteEntity;
     if (!this.hass || !remote) return;
     this._haptic();
-    await this.hass.callService("remote", "turn_on", { entity_id: remote, activity: app.activity });
+    const hass = this.hass;
+    await this._call(`Opening ${app.name}`, () =>
+      hass.callService("remote", "turn_on", { entity_id: remote, activity: app.activity }),
+    );
   }
 
   private async _setVolume(ev: Event): Promise<void> {
     if (!this.hass || !this._config) return;
     const level = Number((ev.target as HTMLInputElement).value) / 100;
     this._pendingVolume = level;
-    await this.hass.callService("media_player", "volume_set", { entity_id: this._device.entity, volume_level: level });
+    const hass = this.hass;
+    await this._call("Setting volume", () =>
+      hass.callService("media_player", "volume_set", { entity_id: this._device.entity, volume_level: level }),
+    );
   }
 
   private _renderButton(button: ResolvedButton, extraClass = ""): TemplateResult {
