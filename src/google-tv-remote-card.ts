@@ -2,9 +2,10 @@ import { LitElement, css, html, nothing, type PropertyValues, type TemplateResul
 import { property, state } from "lit/decorators.js";
 import { resolveDevices, resolveRows, type ResolvedApp, type ResolvedButton, type ResolvedRow } from "./config";
 import { BUTTONS } from "./presets";
+import "./editor";
 import type { DeviceConfig, HomeAssistant, GoogleTvRemoteCardConfig } from "./types";
 
-export const CARD_VERSION = "0.2.1";
+export const CARD_VERSION = "0.3.0";
 
 console.info(
   `%c GOOGLE-TV-REMOTE-CARD %c v${CARD_VERSION} `,
@@ -66,6 +67,10 @@ export class GoogleTvRemoteCard extends LitElement {
   public getCardSize(): number {
     const top = (this._showHeader ? 1 : 0) + (this._devices.length > 1 ? 1 : 0);
     return this._rows.reduce((size, row) => size + (row.type === "dpad" ? 3 : 1), top);
+  }
+
+  public static getConfigElement(): HTMLElement {
+    return document.createElement("google-tv-remote-card-editor");
   }
 
   public static getStubConfig(hass: HomeAssistant): Partial<GoogleTvRemoteCardConfig> {

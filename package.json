@@ -1,6 +1,6 @@
 {
   "name": "google-tv-remote-card",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Home Assistant dashboard card: an iOS-style, configurable remote for Google TV and Android TV devices",
   "type": "module",
   "main": "dist/google-tv-remote-card.js",
