@@ -84,7 +84,7 @@ HACS adds the card to your dashboard resources for you. If you manage dashboards
 
 ### HACS custom repository (fallback)
 
-If the card doesn't show up in the HACS search, for example on an older HACS version, add it as a custom repository:
+If the card doesn't show up in the HACS search, for example because HACS hasn't refreshed its store list yet, add it as a custom repository:
 
 1. Open **HACS** in Home Assistant.
 2. Click the **⋮** menu in the top right → **Custom repositories**.
