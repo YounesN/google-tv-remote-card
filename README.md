@@ -1,6 +1,6 @@
 # Google TV Remote Card
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
 [![Build](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml/badge.svg)](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml)
 
 A Home Assistant dashboard card that turns your **Google TV or Android TV** device, whether a TV, an NVIDIA Shield or a Google TV Streamer, into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
@@ -69,11 +69,30 @@ Under **Settings → Devices & services → Android TV Remote → Configure**, y
 
 ### HACS (recommended)
 
+The card is in the default HACS store, so you can install it directly. Click this button to open it in your Home Assistant:
+
+[![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=YounesN&repository=google-tv-remote-card&category=plugin)
+
+Or find it yourself:
+
+1. Open **HACS** in Home Assistant.
+2. Search for **Google TV Remote Card** and open it.
+3. Click **Download**, then **Download** again to confirm.
+4. Reload your browser when prompted.
+
+HACS adds the card to your dashboard resources for you. If you manage dashboards in YAML mode, add `/hacsfiles/google-tv-remote-card/google-tv-remote-card.js` as a **JavaScript module** resource yourself.
+
+### HACS custom repository (fallback)
+
+If the card doesn't show up in the HACS search, for example on an older HACS version, add it as a custom repository:
+
 1. Open **HACS** in Home Assistant.
 2. Click the **⋮** menu in the top right → **Custom repositories**.
 3. Add `https://github.com/YounesN/google-tv-remote-card` with type **Dashboard**, then click **Add**.
 4. Search for **Google TV Remote Card**, open it, and click **Download**.
 5. Reload your browser when prompted.
+
+If you added it this way before it joined the store, you don't need to do anything. Updates keep working.
 
 ### Manual
 
