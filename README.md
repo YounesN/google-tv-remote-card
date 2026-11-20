@@ -1,6 +1,6 @@
 # Google TV Remote Card
 
-[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
+[![Home Assistant Marketplace](https://img.shields.io/badge/Home%20Assistant-Marketplace-41BDF5.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=YounesN&repository=google-tv-remote-card&category=plugin)
 [![Build](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml/badge.svg)](https://github.com/YounesN/google-tv-remote-card/actions/workflows/build.yml)
 
 A Home Assistant dashboard card that turns your **Google TV or Android TV** device, whether a TV, an NVIDIA Shield or a Google TV Streamer, into a clean, iOS-style remote. Pick the rows you want: buttons, an Apple TV–style clickpad, volume as buttons or a slider, media controls, and one-tap app launchers.
@@ -67,32 +67,38 @@ Under **Settings → Devices & services → Android TV Remote → Configure**, y
 
 ## 2. Install the card
 
-### HACS (recommended)
+### Marketplace (recommended)
 
-The card is in the default HACS store, so you can install it directly. Click this button to open it in your Home Assistant:
+On Home Assistant 2026.11 and newer, the Marketplace replaces HACS, and the card is in its catalog. Click this button to open the card in your own Home Assistant:
 
-[![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=YounesN&repository=google-tv-remote-card&category=plugin)
+[![Open your Home Assistant instance and show this repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=YounesN&repository=google-tv-remote-card&category=plugin)
 
 Or find it yourself:
+
+1. Go to **Settings → Marketplace**. You need an administrator account.
+2. On your first visit, read the notice and select **I understand the risks and agree**.
+3. Search for **Google TV Remote Card** and select **Install**.
+4. Reload your browser.
+
+The Marketplace adds the card to your dashboard resources for you. If you manage resources in YAML, add `/local/community/google-tv-remote-card/google-tv-remote-card.js` as a `module` resource yourself.
+
+Already installed it with HACS? You don't need to do anything. Home Assistant moves it to the Marketplace when you update to 2026.11, and it keeps getting updates.
+
+### Older Home Assistant (HACS)
+
+Before 2026.11, install it through HACS:
 
 1. Open **HACS** in Home Assistant.
 2. Search for **Google TV Remote Card** and open it.
 3. Click **Download**, then **Download** again to confirm.
 4. Reload your browser when prompted.
 
-HACS adds the card to your dashboard resources for you. If you manage dashboards in YAML mode, add `/hacsfiles/google-tv-remote-card/google-tv-remote-card.js` as a **JavaScript module** resource yourself.
+### Custom repository (fallback)
 
-### HACS custom repository (fallback)
+If the card doesn't show up when you search, add the repository by its link:
 
-If the card doesn't show up in the HACS search, for example because HACS hasn't refreshed its store list yet, add it as a custom repository:
-
-1. Open **HACS** in Home Assistant.
-2. Click the **⋮** menu in the top right → **Custom repositories**.
-3. Add `https://github.com/YounesN/google-tv-remote-card` with type **Dashboard**, then click **Add**.
-4. Search for **Google TV Remote Card**, open it, and click **Download**.
-5. Reload your browser when prompted.
-
-If you added it this way before it joined the store, you don't need to do anything. Updates keep working.
+- **Marketplace:** in **Settings → Marketplace**, select **Add from link** and enter `https://github.com/YounesN/google-tv-remote-card`. This needs your Home Assistant connected to GitHub (by device sign-in). Then install it as above.
+- **HACS:** click the **⋮** menu in the top right → **Custom repositories**, add `https://github.com/YounesN/google-tv-remote-card` with type **Dashboard**, and click **Add**. Then search for the card and download it.
 
 ### Manual
 
